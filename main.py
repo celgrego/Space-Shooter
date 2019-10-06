@@ -1,4 +1,4 @@
-import sys, logging, os, random, math, open_color, arcade
+import sys, logging, os, random, math, open_color, arcade, time
 
 
 version = (3,7)
@@ -8,8 +8,8 @@ assert sys.version_info >= version, "This script requires at least Python {0}.{1
 logging.basicConfig(format='[%(filename)s:%(lineno)d] %(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-SCREEN_WIDTH = 2400
-SCREEN_HEIGHT = 1100
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 600
 MARGIN = 30
 SCREEN_TITLE = "Cat Shooting Gallery"
 
@@ -44,10 +44,12 @@ class Enemy(arcade.Sprite):
     
         super().__init__("assets/target.png", 0.5)
         self.hp = ENEMY_HP
-        (self.center_x, self.center_y) = position   
+        (self.center_x, self.center_y) = position  
+            
 
 
-        
+
+
 
 
 class Window(arcade.Window):
@@ -58,17 +60,22 @@ class Window(arcade.Window):
         os.chdir(file_path)
 
         self.set_mouse_visible(False)
-        arcade.set_background_color(open_color.blue_4)
+        arcade.set_background_color(open_color.black)
         self.bullet_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.player = Player()
         self.score = 0
+        self.start = time.time()   
+          
 
     def setup(self):
      
+        
+
+
         for i in range(NUM_ENEMIES):
-            x = random.randint(200,2200)
-            y = random.randint(150,1000)
+            x = random.randint(100,900)
+            y = random.randint(100,500)
             enemy = Enemy((x,y))
             self.enemy_list.append(enemy)            
 
@@ -81,14 +88,22 @@ class Window(arcade.Window):
                b.kill()
                if e.hp <= 0:
                    e.kill()
+                   self.score = self.score + 100
+        
+                   
         
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text(str(self.score), 20, SCREEN_HEIGHT - 40, open_color.white, 16)
+        current = time.time()
+        elapsed = self.start - current
+        arcade.draw_text(str(elapsed), SCREEN_WIDTH - 40, SCREEN_HEIGHT - 40, arcade.color.GREEN, 16)
+        arcade.draw_text(str(self.score), 20, SCREEN_HEIGHT - 40, arcade.color.GREEN, 16)
         self.player.draw()
         self.bullet_list.draw()
-        self.enemy_list.draw()
+        self.enemy_list.draw() 
+        if self.score >= 1000:
+            arcade.draw_text("Congratulations! A nerd is you!", 160, 300, arcade.color.GREEN, 40)    
 
     def on_mouse_motion(self, x, y, dx, dy):
      
@@ -102,10 +117,13 @@ class Window(arcade.Window):
                 bullet = Bullet((x,y),(0,10),BULLET_DAMAGE)
                 self.bullet_list.append(bullet)
 
+
 def main():
     window = Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()
+    
+
 
 
 if __name__ == "__main__":
