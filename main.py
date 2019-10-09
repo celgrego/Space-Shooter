@@ -95,15 +95,17 @@ class Window(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
-        current = time.time()
-        elapsed = self.start - current
-        arcade.draw_text(str(elapsed), SCREEN_WIDTH - 40, SCREEN_HEIGHT - 40, arcade.color.GREEN, 16)
+        if self.score >= 1000:
+            arcade.draw_text("Congratulations! A nerd is you!", 160, 300, arcade.color.GREEN, 40)
+        else:
+            current = time.time()
+            elapsed = self.start - current
+            self.bullet_list.draw()
+            self.enemy_list.draw()
+            arcade.draw_text(str(elapsed), SCREEN_WIDTH - 40, SCREEN_HEIGHT - 40, arcade.color.GREEN, 16)
         arcade.draw_text(str(self.score), 20, SCREEN_HEIGHT - 40, arcade.color.GREEN, 16)
         self.player.draw()
-        self.bullet_list.draw()
-        self.enemy_list.draw() 
-        if self.score >= 1000:
-            arcade.draw_text("Congratulations! A nerd is you!", 160, 300, arcade.color.GREEN, 40)    
+           
 
     def on_mouse_motion(self, x, y, dx, dy):
      
